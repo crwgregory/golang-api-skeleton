@@ -1,0 +1,7 @@
+{
+  "host": "",
+  "user": "",
+  "password": "",
+  "database_name": "",
+  "port": 0 // port is not required but will override 3306 if desired
+}

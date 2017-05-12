@@ -1,0 +1,6 @@
+*.exe
+.idea/*
+golang-api-skeleton
+
+docker/settings/*
+!docker/settings/.gitkeep
