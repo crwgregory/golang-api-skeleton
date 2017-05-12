@@ -41,4 +41,4 @@ the docker container and be used for generating jwt's. The key can be used with 
 Verbose can be turned off in the Dockerfile under API_VERBOSE. Verbose will print err's and stack traces when set in the api response.
  
 ### External libraries
-[SHA3](golang.org/x/crypto/sha3)
+[SHA3](http://golang.org/x/crypto/sha3)
