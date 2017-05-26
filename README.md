@@ -34,11 +34,13 @@ See amazons credential documentation. You can comment out where the log is pushe
 function in the `handler.go` file if you want to **disable** logging.
 
 ### Creating a super secret key
-Run the php script in the templates folder in the docker folder, that will generate a byte key that will then be copied to 
-the docker container and be used for generating jwt's. The key can be used with other crypting algorithms like blowfish.
+If you need to generate a key for your server: run the script in the templates folder in the docker folder, that will generate a byte key that will then be copied to the docker container and be used for generating jwt's and hashing passwords.
 
 ### Verbose
 Verbose can be turned off in the Dockerfile under API_VERBOSE. Verbose will print err's and stack traces when set in the api response.
  
 ### External libraries
 [SHA3](http://golang.org/x/crypto/sha3)
+
+## Contributing
+Feel free to open any and all pull requests. :D
