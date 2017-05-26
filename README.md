@@ -35,10 +35,10 @@ function in the `handler.go` file if you want to **disable** logging.
 
 ### Creating a super secret key
 Run the php script in the templates folder in the docker folder, that will generate a byte key that will then be copied to 
-the docker container and be used for generating jwt's. The key can be used with other hashing algorithms like blowfish.
+the docker container and be used for generating jwt's. The key can be used with other crypting algorithms like blowfish.
 
 ### Verbose
 Verbose can be turned off in the Dockerfile under API_VERBOSE. Verbose will print err's and stack traces when set in the api response.
  
 ### External libraries
-[SHA3](golang.org/x/crypto/sha3)
+[SHA3](http://golang.org/x/crypto/sha3)
