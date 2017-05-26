@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/crwgregory/golang-api-skeleton/components"
-	"time"
 	"fmt"
+	"github.com/crwgregory/golang-api-skeleton/components"
 	"math/rand"
+	"time"
 )
 
 type TestHandler struct{}
@@ -15,6 +15,6 @@ func (e *TestHandler) Handle(r Request, logChan chan components.Log) components.
 	time.Sleep(sleep)
 	return components.ApiResponse{
 		StatusCode: 200,
-		Message: fmt.Sprintf("slept for %s", sleep.String()),
+		Message:    fmt.Sprintf("slept for %s", sleep.String()),
 	}
 }

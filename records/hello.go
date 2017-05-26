@@ -9,8 +9,8 @@ import (
 // Hello The record struct
 // the json meta data is used for the name of the column in the db, as well as returning the data in the api response
 type Hello struct {
-	Record
-	ID int `json:"id"`
+	MySQLRecord
+	ID   int    `json:"id"`
 	Name string `json:"name"`
 }
 
@@ -26,7 +26,7 @@ func (h *Hello) Load(id int) (err error) {
 	// format the query
 	query := fmt.Sprintf(find_one_hello, strings.Join(columns, ","), id)
 	// get the sql connection
-	db := h.GetSqlDb()
+	db := h.GetDb()
 	// query for the data
 	row := db.QueryRow(query)
 	// parse the data from the row

@@ -1,26 +1,25 @@
 package connection
 
 import (
-	_ "github.com/go-sql-driver/mysql"
 	"database/sql"
-	"os"
-	"path/filepath"
-	"io/ioutil"
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 var db *sql.DB
 
-
 const default_port = 3306
 
 type MysqlConnection struct {
-	host string
-	user string
-	password string
+	host          string
+	user          string
+	password      string
 	database_name string
-	port int
+	port          int
 }
 
 func (con *MysqlConnection) Open() bool {
@@ -56,7 +55,7 @@ func (con *MysqlConnection) GetDB() interface{} {
 func (m *MysqlConnection) loadDbSettings() {
 
 	homeDir := os.Getenv("HOME") // *nix
-	if homeDir == "" {               // Windows
+	if homeDir == "" {           // Windows
 		homeDir = os.Getenv("USERPROFILE")
 	}
 	if homeDir == "" {

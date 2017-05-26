@@ -1,11 +1,11 @@
 package main
 
 import (
-	"testing"
-	"github.com/crwgregory/golang-api-skeleton/handlers"
 	"github.com/crwgregory/golang-api-skeleton/components"
+	"github.com/crwgregory/golang-api-skeleton/handlers"
 	"net/http"
 	"net/url"
+	"testing"
 )
 
 func TestBuildRouter(t *testing.T) {
@@ -25,7 +25,7 @@ func TestBuildRouter(t *testing.T) {
 
 	req := &http.Request{
 		Method: "GET",
-		URL: testUrl,
+		URL:    testUrl,
 	}
 
 	limit := 100
@@ -35,7 +35,7 @@ func TestBuildRouter(t *testing.T) {
 	// put the request into the Routers request channel with the created response channel for this request
 	for i := 0; i < limit; i++ {
 		r.request <- handlers.Request{
-			Request: req,
+			Request:  req,
 			Response: response,
 		}
 	}
@@ -44,7 +44,7 @@ func TestBuildRouter(t *testing.T) {
 
 	for range response {
 		count++
-		if count == limit -1 {
+		if count == limit-1 {
 			break
 		}
 	}

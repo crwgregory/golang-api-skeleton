@@ -1,17 +1,17 @@
 package config
 
 import (
-	"os"
-	"time"
-	"log"
-	"path/filepath"
 	"bufio"
+	"log"
+	"os"
+	"path/filepath"
+	"time"
 )
 
 const (
 	VerboseEnvVar = "API_VERBOSE" // set to "true" if verbose errors should be returned
 
-	LogPoolSize = 10 // used to make a pool of items to send to dynamo
+	LogPoolSize = 10  // used to make a pool of items to send to dynamo
 	LogChanSize = 100 // used to buffer the log chan size
 
 	WorkerPoolSize = 3
@@ -35,7 +35,7 @@ func JWTLifeTime() time.Duration {
 
 func GetSecretKey() (key []byte, err error) {
 	homeDir := os.Getenv("HOME") // *nix
-	if homeDir == "" {               // Windows
+	if homeDir == "" {           // Windows
 		homeDir = os.Getenv("USERPROFILE")
 	}
 	if homeDir == "" {

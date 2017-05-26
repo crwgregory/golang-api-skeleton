@@ -1,16 +1,16 @@
 package utils
 
 import (
-	"net/url"
-	"net/http"
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"github.com/crwgregory/golang-api-skeleton/components"
 	"io"
 	"io/ioutil"
-	"bytes"
-	"github.com/crwgregory/golang-api-skeleton/components"
-	"fmt"
-	"strings"
+	"net/http"
+	"net/url"
 	"runtime/debug"
+	"strings"
 )
 
 func GetRequestData(keys []string, r *http.Request) (data map[string]interface{}, errRes *components.ApiResponse) {
@@ -18,16 +18,16 @@ func GetRequestData(keys []string, r *http.Request) (data map[string]interface{}
 	if len(needs) > 0 {
 		return nil, &components.ApiResponse{
 			StatusCode: http.StatusUnprocessableEntity,
-			Message: fmt.Sprintf("request requires: %s", strings.Join(needs, ",")),
+			Message:    fmt.Sprintf("request requires: %s", strings.Join(needs, ",")),
 		}
 	}
 	data, err := GetJsonBody(r)
 	if err != nil {
 		return nil, &components.ApiResponse{
-			StatusCode:http.StatusInternalServerError,
-			Message:"there was an error parsing the request body",
-			Error: err,
-			Stack: debug.Stack(),
+			StatusCode: http.StatusInternalServerError,
+			Message:    "there was an error parsing the request body",
+			Error:      err,
+			Stack:      debug.Stack(),
 		}
 	}
 	return

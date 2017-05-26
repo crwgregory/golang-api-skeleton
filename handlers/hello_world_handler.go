@@ -8,9 +8,9 @@ import (
 
 var hello_world_routes = HandlerCallbackRoutes{
 	{
-		Name: "hello",
-		Method: "GET",
-		Path: "/hello/world",
+		Name:     "hello",
+		Method:   "GET",
+		Path:     "/hello/world",
 		Callback: helloWorld,
 	},
 }
@@ -26,7 +26,7 @@ func (h *HelloWorldHandler) Handle(request Request, logChan chan components.Log)
 
 func helloWorld(r *http.Request, p url.Values) components.ApiResponse {
 	return components.ApiResponse{
-		Message: "Hello World!",
+		Message:    "Hello World!",
 		StatusCode: http.StatusOK,
 	}
 }

@@ -1,25 +1,24 @@
-package utils
+package authentication
 
 import (
-	"github.com/crwgregory/golang-api-skeleton/config"
-	"golang.org/x/crypto/sha3"
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
+	"golang.org/x/crypto/sha3"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"github.com/crwgregory/golang-api-skeleton/errors"
 )
 
 type Payload struct {
-	UserID int `json:"user_id"`
-	UserGroups []int `json:"user_groups"`
-	Expires string `json:"exp"`
+	UserID     int    `json:"user_id"`
+	UserGroups []int  `json:"user_groups"`
+	EntityIDs  []int  `json:"entity_ids"`
+	Expires    string `json:"exp"`
 }
 
 type header struct {
 	Algorithm string `json:"alg"`
-	Type string `json:"typ"`
+	Type      string `json:"typ"`
 }
 
 func ParseJWT(jwt string) (payload *Payload, err error) {
@@ -30,7 +29,7 @@ func ParseJWT(jwt string) (payload *Payload, err error) {
 		return
 	}
 	payloadBytes, err := base64.StdEncoding.DecodeString(parts[1])
-	if  err != nil {
+	if err != nil {
 		return
 	}
 	signature := parts[2]
@@ -58,17 +57,18 @@ func ParseJWT(jwt string) (payload *Payload, err error) {
 	return
 }
 
-func GetJWT(user_id int, user_groups []int) (jwt string, err error) {
+func GetJWT(userID int, groupIDs, entityIDs []int) (jwt string, err error) {
 
 	header := header{
 		Algorithm: "SHAKE256",
-		Type: "JWT",
+		Type:      "JWT",
 	}
 
 	payload := Payload{
-		UserID: user_id,
-		UserGroups: user_groups,
-		Expires:strconv.Itoa(int(time.Now().Add(config.JWTLifeTime()).Unix())),
+		UserID:     userID,
+		UserGroups: groupIDs,
+		EntityIDs:  entityIDs,
+		Expires:    strconv.Itoa(int(time.Now().Add(config.JWTLifeTime()).Unix())),
 	}
 
 	encodedHeader, encodedPayload := encodeHeaderAndPayload(header, payload)
@@ -77,7 +77,7 @@ func GetJWT(user_id int, user_groups []int) (jwt string, err error) {
 	if err != nil {
 		return
 	}
-	jwt = encodedHeader+"."+encodedPayload+"."+ encodedSignature
+	jwt = encodedHeader + "." + encodedPayload + "." + encodedSignature
 	return
 }
 
@@ -89,7 +89,7 @@ func getSignature(encodedHeader, encodedPayload string) (signature string, err e
 	shakeHash := sha3.NewShake256()
 	s := make([]byte, 32)
 	shakeHash.Write(key)
-	shakeHash.Write([]byte(encodedHeader+"."+encodedPayload))
+	shakeHash.Write([]byte(encodedHeader + "." + encodedPayload))
 	shakeHash.Read(s)
 	return base64.StdEncoding.EncodeToString(s), nil
 }

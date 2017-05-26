@@ -1,12 +1,12 @@
 package handlers
 
 import (
+	"fmt"
+	"github.com/crwgregory/golang-api-skeleton/components"
+	"github.com/crwgregory/golang-api-skeleton/connection"
 	"net/http"
 	"net/url"
 	"strings"
-	"github.com/crwgregory/golang-api-skeleton/components"
-	"fmt"
-	"github.com/crwgregory/golang-api-skeleton/connection"
 	"time"
 )
 
@@ -28,8 +28,8 @@ type Handler struct {
 // Handle The default Handle function, to be overridden by specific handlers
 func (h *Handler) Handle(request Request, logChan chan components.Log) components.ApiResponse {
 	return components.ApiResponse{
-		StatusCode:200,
-		Message:"this is the defualt Handler, Handle func",
+		StatusCode: 200,
+		Message:    "this is the defualt Handler, Handle func",
 	}
 }
 
@@ -45,10 +45,10 @@ type HandlerRoutes []HandlerRoute
 
 // HandlerCallbackRoute is a specific Route to each controller/handler method
 type HandlerCallbackRoute struct {
-	Name            string
-	Path            string
-	Method          string
-	Callback        HandlerCallback
+	Name     string
+	Path     string
+	Method   string
+	Callback HandlerCallback
 }
 
 // HandlerCallbackRoutes is an array of HandlerCallbackRoute
@@ -69,7 +69,7 @@ func (h *Handler) RouteController(handlerName string, routes HandlerCallbackRout
 	if match == nil {
 		return components.ApiResponse{
 			StatusCode: 404,
-			Message: fmt.Sprintf("couldn't find match for path: '%s' method: '%s'", r.URL.Path, r.Method),
+			Message:    fmt.Sprintf("couldn't find match for path: '%s' method: '%s'", r.URL.Path, r.Method),
 		}
 	}
 
@@ -81,10 +81,10 @@ func (h *Handler) RouteController(handlerName string, routes HandlerCallbackRout
 
 	log := components.Log{
 		HandlerName: handlerName,
-		RouteName:match.Name,
-		Response:res,
-		Request: *r,
-		When: request.When,
+		RouteName:   match.Name,
+		Response:    res,
+		Request:     *r,
+		When:        request.When,
 	}
 
 	logChan <- log // comment this line out to disable request logging

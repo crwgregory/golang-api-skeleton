@@ -2,21 +2,21 @@ package components
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
-	"strconv"
-	"github.com/crwgregory/golang-api-skeleton/connection"
-	"time"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/crwgregory/golang-api-skeleton/config"
+	"github.com/crwgregory/golang-api-skeleton/connection"
 	"log"
 	"net/http"
-	"github.com/crwgregory/golang-api-skeleton/config"
+	"strconv"
+	"time"
 )
 
 type Log struct {
 	HandlerName string
-	RouteName string
-	Request http.Request
-	When time.Time
-	Response ApiResponse
+	RouteName   string
+	Request     http.Request
+	When        time.Time
+	Response    ApiResponse
 }
 
 // LogRequest logs the request to dynamodb on aws
@@ -27,7 +27,7 @@ func LogRequest(logChan chan Log) {
 
 	for {
 		time.Sleep(1 * time.Second) // wait to get more logs in the channel
-		logStruct := <- logChan // block until there is at least one item
+		logStruct := <-logChan      // block until there is at least one item
 
 		var logPool []Log
 		logPool = append(logPool, logStruct)
@@ -35,7 +35,7 @@ func LogRequest(logChan chan Log) {
 			if len(logPool) > config.LogPoolSize || len(logChan) == 0 {
 				break
 			}
-			l := <- logChan
+			l := <-logChan
 			logPool = append(logPool, l)
 		}
 

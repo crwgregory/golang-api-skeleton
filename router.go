@@ -5,26 +5,29 @@ import (
 	"strings"
 
 	"container/heap"
-	"github.com/crwgregory/golang-api-skeleton/handlers"
-	"github.com/crwgregory/golang-api-skeleton/components"
+	"encoding/json"
 	"fmt"
+	"github.com/crwgregory/golang-api-skeleton/components"
 	"github.com/crwgregory/golang-api-skeleton/config"
+	"github.com/crwgregory/golang-api-skeleton/errors"
+	"github.com/crwgregory/golang-api-skeleton/handlers"
+	"log"
 	"time"
 )
 
 type Worker struct {
 	requests chan handlers.Request // work to do (buffered channel)
-	pending  int          // count of pending tasks
-	index    int          // index in heap
+	pending  int                   // count of pending tasks
+	index    int                   // index in heap
 }
 
 type Pool []*Worker
 
 type Router struct {
-	routes     []handlers.HandlerRoute
+	routes  []handlers.HandlerRoute
 	request chan handlers.Request // incoming request
-	pool Pool
-	done chan *Worker
+	pool    Pool
+	done    chan *Worker
 	logChan chan components.Log
 }
 
@@ -70,23 +73,56 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 
 	route := r.findMatchingRoute(req)
+	var apiResponse *components.ApiResponse
 
 	if route == nil {
-		components.WriteApiResponse(w, components.ApiResponse{
-			StatusCode:http.StatusNotFound,
-			Message:"Route not found",
-		})
-	} else {
-		response := make(chan components.ApiResponse)
-		// put the request into the Routers request channel with the created response channel for this request
-		r.request <- handlers.Request{
-			Request: req,
-			Response: response,
-			Route: *route,
-			When: time.Now(),
+		apiResponse = &components.ApiResponse{
+			StatusCode: http.StatusNotFound,
+			Message:    "Route not found",
 		}
-		res := <-response // wait for response
-		components.WriteApiResponse(w, res)
+	} else {
+		if apiResponse == nil {
+
+			response := make(chan components.ApiResponse)
+			// put the request into the Routers request channel with the created response channel for this request
+			r.request <- handlers.Request{
+				Request:  req,
+				Response: response,
+				Route:    *route,
+				When:     time.Now(),
+			}
+			res := <-response // wait for response
+			apiResponse = &res
+		}
+	}
+	writeApiResponse(w, *apiResponse)
+}
+
+func writeApiResponse(w http.ResponseWriter, apiResponse components.ApiResponse) {
+
+	parsedResponse := components.ParseApiResponse(apiResponse)
+
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+
+	if apiResponse.Error != nil {
+		v, ok := apiResponse.Error.(errors.ApiErrorInterface) // if we are dealing with a known error with a set status code
+		if ok {
+			w.WriteHeader(v.GetStatusCode())
+		} else if apiResponse.StatusCode != 0 {
+			w.WriteHeader(apiResponse.StatusCode)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	} else {
+		w.WriteHeader(apiResponse.StatusCode)
+	}
+
+	for k, v := range apiResponse.Headers {
+		w.Header().Add(k, v)
+	}
+
+	if err := json.NewEncoder(w).Encode(parsedResponse); err != nil {
+		log.Println(err)
 	}
 }
 
@@ -117,18 +153,18 @@ func (r *Router) completed(w *Worker) {
 
 func (w *Worker) work(r *Router) {
 	for {
-		req := <- w.requests
-		req.Response <- req.Route.Handler.Handle(req, r.logChan)      // call Handle and send response
-		r.done <- w                        		                             		// we've finished this request
+		req := <-w.requests
+		req.Response <- req.Route.Handler.Handle(req, r.logChan) // call Handle and send response
+		r.done <- w                                              // we've finished this request
 	}
 }
 
 func (r *Router) balance() {
 	for {
 		select {
-		case req := <- r.request:
+		case req := <-r.request:
 			r.dispatch(req) // request came in on routers request channel, dispatch
-		case w := <- r.done:
+		case w := <-r.done:
 			r.completed(w) // response came in on routers done channel, dispatch
 		}
 	}
@@ -146,7 +182,7 @@ func (r *Router) findMatchingRoute(req *http.Request) *handlers.HandlerRoute {
 	return nil
 }
 
-func (p Pool) Len() int { return len(p) }
+func (p Pool) Len() int           { return len(p) }
 func (p Pool) Less(i, j int) bool { return p[i].pending < p[j].pending }
 func (p Pool) Swap(i, j int) {
 	p[i], p[j] = p[j], p[i]

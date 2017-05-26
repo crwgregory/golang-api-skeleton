@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"reflect"
 	"log"
+	"reflect"
 )
 
 func GetRecordColumns(record interface{}) (columns []string) {

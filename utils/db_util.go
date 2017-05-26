@@ -1,13 +1,12 @@
 package utils
 
 import (
-	"reflect"
-	"fmt"
-	"strconv"
 	"database/sql"
+	"fmt"
 	"log"
+	"reflect"
+	"strconv"
 )
-
 
 func ParseByteArray(data *[]byte, convertTo reflect.Kind) interface{} {
 	switch convertTo {

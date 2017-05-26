@@ -1,8 +1,8 @@
 package connection
 
 import (
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
@@ -19,7 +19,7 @@ func (d *DynamoDB) init() {
 	d.Session = sess
 }
 
-func (d *DynamoDB) GetDB() interface {} {
+func (d *DynamoDB) GetDB() interface{} {
 
 	if d.Session == nil {
 		d.init()
