@@ -6,7 +6,7 @@ import (
 )
 
 type PasswordHasher struct {
-	Key []byte // @see blowfish.NewCipher()
+	Key []byte
 }
 
 // HashPassword encrypts a password with blowfish using a server set, or provided key
