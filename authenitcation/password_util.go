@@ -9,7 +9,6 @@ type PasswordHasher struct {
 	Key []byte
 }
 
-// HashPassword encrypts a password with blowfish using a server set, or provided key
 func (p *PasswordHasher) HashPassword(password string) (string, error) {
 
 	if len(password) < 8 {
