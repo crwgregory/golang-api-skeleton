@@ -2,6 +2,7 @@ package records
 
 import (
 	"database/sql"
+	"github.com/crwgregory/golang-api-skeleton/connection"
 )
 
 type MySQLRecord struct {

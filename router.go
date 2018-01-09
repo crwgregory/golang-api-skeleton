@@ -152,11 +152,9 @@ func (r *Router) completed(w *Worker) {
 }
 
 func (w *Worker) work(r *Router) {
-	for {
-		req := <-w.requests
-		req.Response <- req.Route.Handler.Handle(req, r.logChan) // call Handle and send response
-		r.done <- w                                              // we've finished this request
-	}
+	req := <-w.requests
+	req.Response <- req.Route.Handler.Handle(req, r.logChan) // call Handle and send response
+	r.done <- w                                              // we've finished this request
 }
 
 func (r *Router) balance() {
