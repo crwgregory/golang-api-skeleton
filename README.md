@@ -3,7 +3,7 @@ This is a project to help you get up an running fast with a secure, light weight
 
 ## Skill level
 ***Intermediate***
-This project gives you a basic structure to work with. There is no ORM.
+This project gives you a basic structure to work with.
 ### Prerequisites:
 - Docker
 - Secret Key Generation and handling (for JWT's)
